@@ -6,7 +6,22 @@ Capital Misallocation reconstructed desk.
 
 ## Data-center permit intelligence
 
-The [database-design package](docs/data-center-permit-intelligence/README.md) describes an evidence-backed PostgreSQL model for projects, permits, and parent companies across jurisdictions. It includes the specification, schema, tests, example queries, data dictionary, ER diagram, and downloadable bundle. This is a tested reference design, not a deployed collector or populated registry; it does not change the financial book or weekly contract below.
+The [database-design package](docs/data-center-permit-intelligence/README.md) remains the immutable reference for the evidence-backed PostgreSQL model. This branch adds a **private, local-first module** using that schema: source ingestion, a React research desk, scoped authentication/review, company/parent evidence, API projections, and paired Excel/Markdown exports.
+
+Read the [operator runbook](docs/implementation/RUNBOOK.md), [contracts](docs/implementation/CONTRACTS.md), [QA/handoff report](docs/implementation/QA_HANDOFF.md), and [implementation tracker](MASTER_TRACKER.md).
+
+```bash
+pnpm install --frozen-lockfile
+pnpm setup:local  # Ubuntu + running PostgreSQL 16; generates private local credentials
+pnpm migrate
+pnpm ingest pwc_dc_inventory --baseline
+pnpm dev:api     # terminal 1: loopback API
+pnpm dev:ui      # terminal 2: http://127.0.0.1:5173 on YOUR development machine
+```
+
+Credentials are generated in private `.local/access.md`, never public Git. Verified source scope: **78 county campus records and 247 building records** at the test date; these are inventory records, not 325 additive announced deals. Unmatched buildings retain separate unresolved containers. DEQ is blocked from the tested direct runtime; Loudoun bulk collection remains unverified.
+
+This is **not production deployment**, nationwide coverage, or integration into the unavailable external Grok frontend. No public UI, alert delivery, AI API, paid feed, or production schedule is enabled. The original financial book and weekly files below remain unchanged; permit evidence has a separately generated appendix.
 
 ## Weekly run
 
@@ -27,13 +42,13 @@ Reject: Amazon OBS zeroed, any line item >30% WoW without a page cite, invented 
 
 ## Evaluation — 2026-09-05
 
-| Surface | Status |
-| --- | --- |
-| GitHub `main` | Stub app + weekly contract. The reconstructed React tree lives in the Grok app, not here. |
-| GitHub Pages | 404. Pages is not enabled. |
-| Vercel `ai-capex-monitor-capital-misallocation.vercel.app` | SSO-gated. Cannot be used as a public host. |
-| Manus | OAuth wall. Do not depend on it. |
-| Prior Grok workspace `/home/workdir/artifacts/ai-capex-monitor` | Gone. |
+| Surface                                                         | Status                                                                                    |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| GitHub `main`                                                   | Stub app + weekly contract. The reconstructed React tree lives in the Grok app, not here. |
+| GitHub Pages                                                    | 404. Pages is not enabled.                                                                |
+| Vercel `ai-capex-monitor-capital-misallocation.vercel.app`      | SSO-gated. Cannot be used as a public host.                                               |
+| Manus                                                           | OAuth wall. Do not depend on it.                                                          |
+| Prior Grok workspace `/home/workdir/artifacts/ai-capex-monitor` | Gone.                                                                                     |
 
 **Verdict:** the public hosts are empty or gated. The 25-section cockpit plus node schematic and Sunday run live in the current Grok app. CDS is the honest gap versus the old site — two lagged prints, the rest named and missing.
 
