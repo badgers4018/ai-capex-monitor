@@ -11,8 +11,22 @@ type Page =
   | 'Sources & Coverage'
   | 'Review Queue'
   | 'Weekly Tape';
+// When mounted inside the cockpit the API is reached through its same-origin proxy.
+const API_BASE: string = (import.meta as any).env?.VITE_PERMIT_API_BASE || '';
+const COCKPIT_URL: string = (import.meta as any).env?.VITE_COCKPIT_URL || '';
+const PAGE_SLUGS: Record<string, Page> = {
+  projects: 'Projects',
+  permits: 'Permits & Plans',
+  companies: 'Companies',
+  changes: 'Changes',
+  sources: 'Sources & Coverage',
+  review: 'Review Queue',
+  weekly: 'Weekly Tape',
+};
+const slugFor = (p: Page) => Object.keys(PAGE_SLUGS).find((k) => PAGE_SLUGS[k] === p) || 'projects';
+const pageFromHash = (): Page => PAGE_SLUGS[window.location.hash.replace('#', '')] || 'Projects';
 async function request(path: string, session?: Session | null, body?: any) {
-  const res = await fetch(path, {
+  const res = await fetch(API_BASE + path, {
     method: body === undefined ? 'GET' : 'POST',
     headers:
       body === undefined
@@ -478,7 +492,7 @@ function CompanyProposal({ session, onChange }: { session: Session; onChange: ()
 function App() {
   const [session, setSession] = useState<Session | null>(null),
     [authLoading, setAuthLoading] = useState(true),
-    [page, setPage] = useState<Page>('Projects'),
+    [page, setPage] = useState<Page>(pageFromHash),
     [data, setData] = useState<any>(null),
     [error, setError] = useState(''),
     [loading, setLoading] = useState(false),
@@ -552,6 +566,7 @@ function App() {
     if (selectedId && detailKind) void loadDetail(selectedId, detailKind);
   };
   function navigate(p: Page) {
+    if (window.location.hash !== '#' + slugFor(p)) window.history.replaceState(null, '', '#' + slugFor(p));
     setPage(p);
     setData(null);
     setDetail(null);
@@ -640,6 +655,11 @@ function App() {
             <strong>MONITOR</strong>
           </span>
         </a>
+        {COCKPIT_URL && (
+          <a className="sidebar-label" href={COCKPIT_URL}>
+            ← Financial cockpit
+          </a>
+        )}
         <p className="sidebar-label">PERMIT INTELLIGENCE</p>
         <nav aria-label="Research sections">
           {nav.map((n, i) => (

@@ -20,7 +20,8 @@
     "test:local": "tsx scripts/test-local.ts",
     "test:e2e:local": "tsx scripts/test-local.ts --e2e",
     "test:e2e": "playwright test",
-    "test:schema": "tsx scripts/cli.ts schema-tests"
+    "test:schema": "tsx scripts/cli.ts schema-tests",
+    "build:permit-ui:cockpit": "PERMIT_UI_BASE=/permits/ PERMIT_UI_OUT=../../.local/permit-ui VITE_PERMIT_API_BASE=/permit-api VITE_COCKPIT_URL=/dashboard vite build"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "5.3.0",

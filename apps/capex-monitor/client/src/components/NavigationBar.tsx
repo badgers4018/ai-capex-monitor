@@ -7,12 +7,24 @@ import { ResearchMenu } from "@/components/ResearchMenu";
 type NavItem = { label: string; href: string };
 type NavCategory = { label: string; items: NavItem[] };
 
+/** Permit Intelligence module (separate local Postgres-backed service, mounted at /permits). */
+export const PERMIT_INTELLIGENCE_ITEMS: NavItem[] = [
+  { label: "Projects", href: "/permits/#projects" },
+  { label: "Permits & Plans", href: "/permits/#permits" },
+  { label: "Companies", href: "/permits/#companies" },
+  { label: "Changes", href: "/permits/#changes" },
+  { label: "Sources & Coverage", href: "/permits/#sources" },
+  { label: "Review Queue (reviewers)", href: "/permits/#review" },
+];
+export const isSectionHref = (href: string) => href.startsWith("#");
+
 const navCategories: NavCategory[] = [
   { label: "Overview", items: [{ label: "Current readout", href: "#overview" }, { label: "Watchlist", href: "#watchlist" }, { label: "Capital chain", href: "#flowchart" }, { label: "Capacity", href: "#timeline" }] },
   { label: "Evidence", items: [{ label: "Ledger", href: "#data" }, { label: "Market", href: "#market" }, { label: "Fundamentals", href: "#fundamentals" }, { label: "50-name universe", href: "#universe" }, { label: "Charts", href: "#tradingview" }, { label: "Changelog", href: "#changelog" }] },
   { label: "Risk", items: [{ label: "Sensitivity", href: "#sensitivity" }, { label: "Risk radar", href: "#risk-radar" }, { label: "Circular financing", href: "#circular-risk" }, { label: "Debt wall", href: "#debt-wall" }] },
   { label: "Scenarios", items: [{ label: "Framework", href: "#strategy" }, { label: "Scenario model", href: "#scenarios" }, { label: "Stress test", href: "#scenario-calc" }, { label: "Deep dive", href: "#scenario-deep-dive" }] },
   { label: "Tools", items: [{ label: "Position builder", href: "#position-builder" }, { label: "Compare", href: "#compare" }, { label: "Export", href: "#export" }, { label: "Sources", href: "#sources" }] },
+  { label: "Permit Intelligence", items: PERMIT_INTELLIGENCE_ITEMS },
 ];
 
 const allNavItems = navCategories.flatMap(category => category.items);
@@ -35,11 +47,12 @@ export function NavigationBar() {
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => { if (entry.isIntersecting) setActiveSection(`#${entry.target.id}`); });
     }, { rootMargin: "-20% 0px -70% 0px" });
-    allNavItems.forEach(item => { const element = document.querySelector(item.href); if (element) observer.observe(element); });
+    allNavItems.filter(item => isSectionHref(item.href)).forEach(item => { const element = document.querySelector(item.href); if (element) observer.observe(element); });
     return () => observer.disconnect();
   }, []);
 
   const handleNavClick = useCallback((event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (!isSectionHref(href)) { setMobileOpen(false); return; } // module route: let the browser navigate
     event.preventDefault();
     const target = document.querySelector(href);
     if (target) {

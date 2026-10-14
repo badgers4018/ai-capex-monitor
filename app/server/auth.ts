@@ -86,9 +86,22 @@ export function roleGuard(...roles: Role[]) {
       ? next()
       : next(new ServiceError(403, 'Role cannot perform this action'));
 }
+const LOOPBACK_ORIGIN = /^http:\/\/(localhost|127\.0\.0\.1):\d{2,5}$/;
+// Host-app integration: the cockpit's loopback origin may be added explicitly.
+// Only loopback http origins are accepted; anything else fails closed at startup.
+export function extraTrustedOrigins(raw = process.env.PERMIT_TRUSTED_ORIGINS || ''): string[] {
+  const list = raw.split(',').map((v) => v.trim()).filter(Boolean);
+  for (const o of list)
+    if (!LOOPBACK_ORIGIN.test(o)) throw new Error('PERMIT_TRUSTED_ORIGINS accepts loopback http origins only');
+  return list;
+}
+const EXTRA_ORIGINS = extraTrustedOrigins();
+export function trustedOrigin(origin: string, extra: string[] = EXTRA_ORIGINS) {
+  return /^http:\/\/(localhost|127\.0\.0\.1):(5173|3001)$/.test(origin) || extra.includes(origin);
+}
 export function csrf(req: Request, _res: Response, next: NextFunction) {
   const origin = req.headers.origin;
-  if (origin && !/^http:\/\/(localhost|127\.0\.0\.1):(5173|3001)$/.test(origin))
+  if (origin && !trustedOrigin(origin))
     return next(new ServiceError(403, 'Untrusted request origin'));
   const value = req.headers['x-csrf-token'];
   if (typeof value !== 'string' || value !== req.localSession?.csrf)
