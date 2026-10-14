@@ -1,0 +1,117 @@
+{
+  "version": "1.0.0",
+  "verified_at": "2026-10-14",
+  "collector_user_agent": "AI-Capex-Monitor/0.1 public-source-validation",
+  "sources": [
+    {
+      "key": "pwc_dc_inventory",
+      "publisher": "Prince William County GIS / Planning / Development Services",
+      "canonical_url": "https://gisdata-pwcgov.opendata.arcgis.com/datasets/PWCGOV::data-center-buildings/about",
+      "service_url": "https://gisweb.pwcva.gov/arcgis/rest/services/Planning/Build_Out_Analysis/MapServer",
+      "method": "documented ArcGIS read-only query",
+      "access_status": "approved",
+      "approval_scope": "user-authorized local public-record reads; not unrestricted redistribution",
+      "readiness": "full_local_snapshots_and_repeat_ingestion_verified_not_scheduled",
+      "schema_fingerprints": {
+        "campuses": "fd20ea9ac05d51b2ddc5599e5e8d40f6c89e821dd7e98bfd8634f9d9dcf1d4ae",
+        "buildings": "0c288f4cecd9c2e87a6c82c63e796f1f1f86739c5d6f8fa398d7e45e04674a65"
+      },
+      "redistribution_policy": "review_required; no raw records or credentials in public Git",
+      "terms_url": "https://gisdata-pwcgov.opendata.arcgis.com/",
+      "terms_notes": "Metadata attributes county agencies; a blanket downstream document/data license was not established. No publication of raw payloads is authorized.",
+      "jurisdiction": {
+        "name": "Prince William County, Virginia",
+        "scheme": "us_census_county_fips",
+        "identifier": "51153",
+        "timezone": "America/New_York"
+      },
+      "authority": "Prince William County Development Services / Planning",
+      "layers": [
+        {
+          "id": 10,
+          "name": "Data Center Campuses",
+          "scope": "campuses",
+          "kind": "project",
+          "required_fields": {
+            "OBJECTID": "esriFieldTypeOID",
+            "GlobalID": "esriFieldTypeGlobalID",
+            "CampusName": "esriFieldTypeString",
+            "CaseNumber": "esriFieldTypeString",
+            "ProjectStatus": "esriFieldTypeString",
+            "LastEditDate": "esriFieldTypeDate"
+          }
+        },
+        {
+          "id": 9,
+          "name": "Data Center Buildings",
+          "scope": "buildings",
+          "kind": "building",
+          "required_fields": {
+            "OBJECTID": "esriFieldTypeOID",
+            "GlobalID": "esriFieldTypeGlobalID",
+            "BuildingName": "esriFieldTypeString",
+            "BuildingStatus": "esriFieldTypeString",
+            "GPIN": "esriFieldTypeString",
+            "PermitCase": "esriFieldTypeString",
+            "PlanningCaseNumber": "esriFieldTypeString",
+            "LastEditDate": "esriFieldTypeDate"
+          }
+        }
+      ],
+      "identity": "validated layer-qualified GlobalID; OBJECTID only for ordering; change collection_epoch only on genuine identity reset",
+      "campus_link": "exact nonempty PlanningCaseNumber -> uniquely matching campus CaseNumber; all other relationships unresolved/reviewer-only",
+      "construction_statuses": {
+        "Completed": "completed",
+        "Under Construction": "underway_reported_by_county",
+        "Pending": "unknown",
+        "Planned": "unknown",
+        "Approved Site Plan": "unknown"
+      },
+      "entitlement_statuses": {
+        "Completed": "unknown",
+        "Under Construction": "unknown",
+        "Pending": "under_review",
+        "Planned": "proposed",
+        "Approved Site Plan": "approved"
+      },
+      "permit_statuses": ["Issued", "Pending", "Planned", "Potential", "Finaled"],
+      "date_policy": "ArcGIS epoch-ms retained as source timestamp; YearBuilt year-only; OCCDate reported occupancy, not operations; effective dates unknown unless explicitly evidenced",
+      "unit_policy": "GFA fields retained raw; no canonical area/power/capital claims until unit/basis mappings are reviewed",
+      "pagination": "stable OBJECTID ordering, bounded pages, duplicate-key checks, count-before/count-after, stop on inconsistent completeness",
+      "page_size": 100,
+      "rate_limit": "sequential source queries with 250ms pause; no automatic retry after 401/403",
+      "retries": 0,
+      "request_timeout_ms": 20000,
+      "maximum_bytes": 8388608,
+      "proposed_cadence": "daily snapshot; weekly complete reconciliation; not enabled",
+      "freshness_threshold_hours": 48,
+      "publication_cadence": "county ongoing updates, no daily publication guarantee",
+      "historical_coverage": "current snapshot only; no past-knowledge reconstruction",
+      "document_handling": "layers advertise no attachments; raw metadata/pages archived; linked permits are references, not downloaded by this adapter",
+      "adapter_version": "pwc-arcgis-v1"
+    },
+    {
+      "key": "va_deq_issued_dc_air",
+      "publisher": "Virginia Department of Environmental Quality",
+      "canonical_url": "https://www.deq.virginia.gov/news-info/shortcuts/permits/air/issued-air-permits-for-data-centers",
+      "access_status": "blocked",
+      "readiness": "direct_listing_and_sample_document_http_403",
+      "last_probe_status": 403,
+      "source_release": "2026-10-05",
+      "redistribution_policy": "review_required",
+      "activation_gate": "permitted repeatable inventory/PDF route or approved export; no bypass or assumed bulk access",
+      "proposed_cadence": "publication-aware daily check; not enabled"
+    },
+    {
+      "key": "loudoun_landmarc",
+      "publisher": "Loudoun County, Virginia",
+      "canonical_url": "https://www.loudoun.gov/landmarc",
+      "portal_url": "https://loudouncountyvaeg.tylerhost.net/prod/selfservice#/home",
+      "access_status": "unverified",
+      "readiness": "documentation_http_200_bulk_access_unverified",
+      "redistribution_policy": "review_required",
+      "activation_gate": "validate supported bulk/export/portal method and unattended access permission",
+      "proposed_cadence": "source-specific; not enabled"
+    }
+  ]
+}
