@@ -1,0 +1,498 @@
+# Data-Center Project, Permit, and Parent-Company Data Model
+
+**Version:** 1.0 reference design  
+**Date:** October 13, 2026  
+**Implementation target:** PostgreSQL 16 or later  
+**Status:** Executable schema validated locally; not a production deployment or populated project registry.
+
+## 1. Design decision
+
+Use a **relational identity model plus a versioned evidence ledger and bitemporal fact projections**.
+
+The database has three independent identity domains:
+
+1. **Physical assets:** campuses/projects, phases, buildings, and parcels.
+2. **Regulatory records:** planning cases, zoning applications, permits, inspections, environmental cases, and occupancy records.
+3. **Legal entities:** applicants, landowners, asset owners, developers, operators, tenants, lenders, and corporate parents.
+
+Connect those domains through evidence-backed relationships rather than one wide table. Preserve every source version and contradictory claim; publish only reviewed selections. Keep acquisition/control history separate from construction progress.
+
+**The most important modeling rule:** a permit is not a project, a parcel is not a building, an applicant is not necessarily an owner, and an equity owner is not automatically a controlling parent.
+
+### Stack assumptions
+
+- PostgreSQL is a **reference implementation choice**, not a hosting decision. Its range types, exclusion constraints, recursive queries, and JSONB fit this model well.
+- Base DDL uses UUIDs, precise numeric values, timestamps, date ranges, and latitude/longitude. It does **not** require PostGIS.
+- Polygon-based matching and distance queries should add a separately tested PostGIS migration. They are not implemented in the supplied base schema.
+- PDFs, HTML, and large raw payloads live in durable object storage; the database stores immutable version references and hashes. Small API payloads may be retained in JSONB.
+- One U.S. research registry is assumed. Multi-tenant account isolation is not implemented.
+
+## 2. Deliverable package
+
+| File | Purpose |
+| --- | --- |
+| `001_schema.sql` | Transactional bootstrap DDL: tables, foreign keys, indexes, constraints, integrity triggers, views, and parent traversal |
+| `002_tests.sql` | Rollback-only synthetic regression tests; no real company/project records |
+| `003_queries.sql` | Seven runnable query examples for exports, cases, parent paths, measurements, capital claims, provenance, and source health |
+| `data_dictionary.csv` | Column-level dictionary generated from the actual PostgreSQL catalog |
+| `model_overview.mmd` / `model_overview.png` | Selected relationships; deliberately not every operational table |
+| `test_results.log` | Local regression-test transcript |
+| `Validation_Summary.md` | Test scope and production-readiness boundaries |
+| `Data_Model_Design.md` | This design specification |
+
+`001_schema.sql` is a **new-schema bootstrap**, not an idempotent upgrade migration. Apply it once in a new database. Future changes must use numbered, reviewed migrations; do not rerun the bootstrap against populated data.
+
+## 3. Conceptual model and cardinality
+
+```text
+PROJECT / CAMPUS
+  ├── zero or more PHASES
+  ├── zero or more BUILDINGS
+  ├── many PARCELS through dated project_parcel links
+  └── many JURISDICTIONS with physical/permitting/service roles
+
+AUTHORITY → CASE NAMESPACE → CASE IDENTIFIERS → REGULATORY CASE
+                                                 └── many physical CASE TARGETS
+
+LEGAL ENTITY
+  ├── issuer-scoped legal registration identifiers
+  ├── evidence-backed roles at physical assets or regulatory cases
+  └── directed equity/control/management relationships to other entities
+
+SOURCE FEED → SOURCE RECORD → IMMUTABLE VERSIONS → EVIDENCE
+                                                     └── ASSERTIONS
+                                                          └── REVIEWED FACT SELECTIONS
+```
+
+Key cardinalities:
+
+- A project can cross county or municipal boundaries and use multiple permitting authorities.
+- A building belongs to exactly one project; an optional phase must belong to that same project.
+- A phase belongs to exactly one project. Phase reassignment and project reassignment are not ordinary UPDATE operations.
+- A project can use multiple parcels; a parcel can be associated with different projects over time or shared scopes.
+- A permit/case can cover a campus, several buildings, a phase, or several parcels. It does not require an already matched project.
+- A case can have multiple identifiers, such as a legacy case number and a new portal ID.
+- A source record can mention several objects; the same canonical case can appear in several feeds.
+- A company can have several equity owners, different economic/voting percentages, and more than one evidenced joint controller.
+- A project can have different landowner, asset owner, developer, operator, and tenant entities.
+
+## 4. Keys and identity rules
+
+### Internal keys
+
+Use UUID primary keys generated by the database. Never use a company name, address, permit number, ArcGIS OBJECTID, or parcel number as the global primary key.
+
+`tracked_object` is a **supertype registry**. Its IDs are real foreign-key targets for assertions, events, and case targets. Typed subtypes share its key:
+
+- `project`
+- `phase`
+- `building`
+- `parcel`
+- `company_entity`
+- `regulatory_case`
+
+Composite foreign keys verify that the registry kind matches its subtype. A deferred trigger requires the subtype row before transaction commit. Deletion guards prevent subtype removal from orphaning the registry.
+
+This avoids an unsafe polymorphic pattern such as `subject_type='building', subject_id=123` with no referential integrity.
+
+### External identities
+
+| Identity | Uniqueness boundary |
+| --- | --- |
+| Source record | `(feed_id, collection_epoch, native_key)` |
+| Source version | `(source_record_id, revision)` |
+| Regulatory case identifier | `(case_namespace_id, normalized_value)` |
+| Legal entity identifier | `(entity_identifier_namespace_id, normalized_value)` |
+| Parcel | `(jurisdiction_id, registry_namespace, identifier_epoch, native_parcel_key)` |
+| Phase key | `(project_id, phase_key)` |
+| Building key | `(project_id, internal_building_key)` |
+
+**Case namespaces** belong to an issuing authority and a defined numbering series. Include program/year in the namespace when an authority reuses numbers. Preserve punctuation unless the authority’s documented normalization policy says otherwise.
+
+**Company identifier namespaces** explicitly identify the issuing registry and, for state registrations, its jurisdiction. A Virginia registration number and an Ohio registration number can therefore be identical without colliding. CIK and LEI are different identifier namespaces. A ticker is not a permanent legal-entity ID.
+
+**Source epochs** handle genuine identifier resets during portal migrations. Do not generate a new epoch for each ingestion run. A changed ArcGIS OBJECTID is a source identity problem to reconcile, not automatic proof of a new building.
+
+Jurisdiction identifier schemes must be issuer-and-level qualified, such as a U.S. county-FIPS scheme, rather than an ambiguous string `FIPS`. This scheme vocabulary is governed by adapter configuration in the reference design.
+
+### Identity corrections and merges
+
+`identity_state` distinguishes candidates, confirmed objects, and merged objects. Same-kind redirect foreign keys and cycle checks support merge redirects; `merge_decision` records the decision and evidence.
+
+A merge must be performed transactionally by a reviewed identity workflow. Preserve old objects and source links. Redirect IDs in queries rather than deleting history. **Merge decisions do not automatically rewrite every reference or undo a merge**; reversible split/unmerge operations need a dedicated migration/workflow.
+
+Display labels, aliases, and some membership/link metadata are current structural metadata. For evidence-backed historical names, use the `name.legal` or `name.project` assertion predicates. A historical export must not silently treat today’s cached label as a name known in the past.
+
+## 5. Table groups and grains
+
+### A. Jurisdictions, authorities, and source operations
+
+| Table | One row represents | Important fields or rules |
+| --- | --- | --- |
+| `jurisdiction` | A geographic/regulatory jurisdiction | Type, country, name, timezone |
+| `jurisdiction_identifier` | A qualified external jurisdiction ID | Scheme + value is unique |
+| `jurisdiction_relation` | A containment or overlap link | Supports overlaps rather than forcing all geographies into one tree |
+| `authority` | An issuing/regulating body | Separate from geography |
+| `authority_jurisdiction` | An authority’s territorial scope | Many-to-many |
+| `source_feed` | A specific portal/feed/layer/export | Access status, endpoint, terms, credential reference, adapter/schema version |
+| `feed_coverage` | Coverage of a record family in a jurisdiction | History start, completeness statement, notes |
+| `ingestion_run` | A bounded retrieval attempt | Scope, baseline flag, result counts, completeness, errors, times |
+| `feed_checkpoint` | A committed cursor for a feed/scope | Revision, successful run, cursor JSON; deletion and regression guarded |
+| `source_record` | A stable source-native record identity | Feed/epoch/native-key uniqueness |
+| `source_record_version` | A retrieved content revision | Hash, raw payload/storage URI, source timestamps, retrieval time |
+| `record_observation` | Presence/missing observation in a run | Composite FKs keep run, feed, record, and version consistent |
+| `evidence` | A source-version location or excerpt | JSON pointer/page/row, quotation, origin group, original publisher link |
+
+A source access status of `blocked` is independent of project status. An HTTP 403 should create a failed ingestion run, not a disappearance/cancellation event for every source record.
+
+### B. Physical assets and legal identities
+
+| Table | One row represents | Important fields or rules |
+| --- | --- | --- |
+| `tracked_object` | A stable canonical identity | Kind, identity state, display label, optional merge redirect |
+| `project` | One physical campus/project | Site type, approximate coordinate, location precision |
+| `phase` | A delivery phase within a project | Scoped phase key |
+| `building` | One physical building within a project | Scoped building key, optional same-project phase |
+| `parcel` | One registry-qualified parcel identity | Jurisdiction, namespace, epoch, native ID |
+| `project_jurisdiction` | A project’s jurisdiction association | Physical, permitting, or service-area role |
+| `project_parcel` | An evidenced project/parcel relationship | Effective date range; not a corporate ownership claim |
+| `parcel_lineage` | A split, consolidation, or renumbering link | Predecessor/successor and evidence |
+| `company_entity` | One legal entity | Entity type and incorporation jurisdiction |
+| `entity_identifier_namespace` | One legal-ID issuing namespace | Identifier type, issuer, issuer jurisdiction, normalization policy |
+| `entity_identifier` | One evidenced legal registration ID | Namespace-qualified uniqueness |
+| `object_alias` | A searchable name/address/project code | Evidence-linked; not a globally unique name |
+
+`project_parcel` is effective-dated but not fully knowledge-time versioned. To reproduce all past structural matching decisions, add bitemporal membership histories or preserve/export a database snapshot. The supplied bitemporal ledger covers substantive facts, relationships, and selected measurements; it is not a claim that every administrative table is temporal.
+
+### C. Regulatory cases
+
+| Table | One row represents | Important fields or rules |
+| --- | --- | --- |
+| `case_namespace` | An authority’s numbering series | Immutable authority/namespace policy |
+| `regulatory_case` | One permit/application/inspection/docket | Case family, immutable issuing authority |
+| `case_identifier` | An evidenced identifier for a case | Namespace must belong to the same issuing authority |
+| `case_relationship` | A documented case-to-case link | Amends, supersedes, trade-of, inspection-of, related-to |
+| `case_target` | A case’s scope over a physical object | Covers, references, or partial-work |
+| `source_object_link` | A reviewed source-to-canonical association | Canonical record, mention, applicant, or location link |
+
+A document revision ordinarily becomes a new **source record version**, not a new permit. Create a new case only when the agency has a separately identified case. Link separately numbered amendments/subpermits to their master case.
+
+### D. Assertions, typed facts, and selections
+
+| Table | One row represents | Important fields or rules |
+| --- | --- | --- |
+| `predicate_definition` | A permitted fact category | Storage kind; immutable semantics |
+| `assertion` | One extracted or analyst-proposed claim | Subject, predicate, effective validity, extraction version, confidence, idempotency key |
+| `assertion_evidence` | Support/contradiction/context for a claim | Link-recorded timestamp prevents evidence lookahead |
+| `assertion_review` | An append-only review decision | Accepted/rejected/needs-review, reviewer, rationale, time |
+| `attribute_claim` | One attribute payload | Names, purpose, states, date ranges/precision, addresses |
+| `unit_definition` | A unit and base conversion | Dimension and exact factor |
+| `metric_definition` | A distinct measurement meaning | Separate IT, facility, generator, utility, and floor-area measures |
+| `metric_claim` | One measured/reported figure | Reported value/unit and normalized value/unit, qualifier and scope |
+| `capital_claim` | One disclosed valuation/commitment/financing amount | Amount/range, currency, basis, geography, spend period, inclusions |
+| `company_relationship_claim` | One directed company relationship | Child, parent/owner, relation kind, economic/voting %, share-class basis |
+| `participation_claim` | One entity’s role at a non-entity target | Landowner, owner, developer, operator, tenant, applicant, contractor, lender, sponsor |
+| `fact_selection` | One reviewed canonical fact for a slot and time | Assertion pointer, valid-time range, knowledge-time range, policy/reviewer |
+| `capital_claim_link` | A relationship between monetary disclosures | Contains, overlaps, duplicates, replaces |
+
+A deferred constraint requires exactly one typed payload per assertion. Subject/predicate foreign keys prevent selecting a fact for the wrong object. Metric normalization enforces dimensional compatibility. For example, square feet cannot enter an IT-power metric.
+
+Attribute JSON schemas and detailed status vocabularies must be validated by the ingestion/review application. The supplied SQL checks the payload type but does not fully enforce every date/address/status JSON shape.
+
+### E. Review, audit, and reporting
+
+| Table | One row represents | Important fields or rules |
+| --- | --- | --- |
+| `review_issue` | A match/conflict/quality issue | Subject/source, proposed match, status, resolution |
+| `merge_decision` | An evidenced identity merge decision | Reviewer, rationale, source evidence |
+| `change_event` | A material change | Old/new selections, effective/observed dates, evidence, dedupe key, alert flag |
+| `notification_outbox` | One event/destination delivery attempt | Unique event/destination, retries, leases, provider ID |
+| `export_run` | A paired export/report generation | Effective and knowledge cutoffs, policy, snapshot reference, artifact/coverage manifests |
+
+## 6. Bitemporal facts: what happened versus what we knew
+
+Each canonical selection has:
+
+- **Valid time:** `daterange` describing when the selected fact applies in the real world.
+- **System/knowledge time:** `tstzrange` describing when the tracker treated that selection as canonical.
+
+Both use half-open intervals `[start,end)`. Date ranges deliberately avoid inventing a precise timestamp for records that disclose only a calendar date. Event dates with intraday precision can be preserved in raw evidence; an intraday-validity extension requires a future migration.
+
+The exclusion constraint prevents two selections for the same **subject + predicate + slot** from overlapping in both valid time and system time.
+
+### Illustrative ownership correction
+
+**Synthetic example—not a real deal:** the tracker initially believes Site LLC is controlled by Parent A. On September 10 it obtains evidence that Parent B acquired control effective July 1.
+
+At September 10, in one transaction:
+
+1. Close the previous Parent-A selection’s knowledge interval.
+2. Insert the corrected Parent-A selection, valid only until July 1, with knowledge starting September 10.
+3. Insert Parent B’s evidenced control claim valid from July 1, with knowledge starting September 10.
+4. Emit an acquisition/control-change event carrying the effective July 1 date and September 10 observation date.
+
+Queries can now distinguish:
+
+- **Effective August 1, known August 15:** the previous belief about Parent A.
+- **Effective August 1, known October 1:** corrected Parent B control.
+
+Do not backdate the knowledge clock to July 1 merely because the transaction was effective then.
+
+### Unknown effective dates
+
+`assertion.valid_during` can be NULL when effective validity is unknown. That is different from an unbounded range, which represents a deliberately broad applicability statement.
+
+Selections declare one of three validity bases:
+
+- `evidenced`: selected interval lies within the assertion’s evidenced interval.
+- `observed_asof`: a single observed calendar day, without a fabricated acquisition/start date.
+- `inferred_carry_forward`: explicit policy-based carry-forward, distinguishable in reports.
+
+The parent traversal function excludes inferred carry-forward edges by default. Do not present those edges as confirmed control history.
+
+### Review and retraction
+
+New selections require accepted review and supporting evidence available at their knowledge start. Both the source-version retrieval time and evidence-link time are checked. New selections must begin with open knowledge intervals; the only permitted UPDATE is closing an open interval.
+
+Appending `rejected` or `needs_review` automatically closes open selections for that assertion at the review timestamp. Acceptance does not automatically choose a winner; the selector must explicitly choose the new fact under its policy.
+
+**Production requirement:** runtime clients must not be allowed to supply arbitrary provenance timestamps. Use a controlled writer/reviewer service or stored procedures that server-stamp assertion, evidence, review, and selection times. The bootstrap contains integrity checks but does not deploy authenticated roles or the full writer API. A privileged schema owner can still fabricate timestamps or disable triggers.
+
+## 7. Parent-company graph and resolution policy
+
+Store **direct evidenced edges**, not one mutable `parent_company_id` column on a project.
+
+Relationship kinds are deliberately different:
+
+- `equity_owner`: economic ownership.
+- `voting_owner`: voting ownership.
+- `controls`: expressly evidenced control.
+- `consolidates`: accounting consolidation.
+- `managed_by`: management arrangement, not presumed ownership/control.
+
+Economic and voting percentages are separate and may be NULL. Do not infer a precise percentage from “subsidiary.” A percentage must state its share-class/denominator context where relevant. Do not multiply percentages into an ultimate ownership estimate without a separate reviewed methodology.
+
+### Separate entity participation from corporate hierarchy
+
+A project can identify Site LLC as landowner, Developer LLC as developer, and Cloud Operator Inc. as tenant/operator. Resolve the parent chain for **each role entity separately**. An operator’s parent is not automatically the landowner’s parent.
+
+Registered-agent evidence must never produce a control edge. The reference model does not provide a complete company-contact/registered-agent directory; add that separately if required. Shared agent/address information is a matching clue only.
+
+### Traversal behavior
+
+`control_paths(child, valid_date, known_at, max_depth)` returns ancestor paths and the selections that support them. It:
+
+- Filters both effective and knowledge dates.
+- Uses only selected control edges, not every proposed relationship.
+- Excludes inferred carry-forward edges.
+- Limits traversal depth.
+- Prevents path recursion through repeated entities.
+- Distinguishes intermediate paths, depth limits, and no-further-evidenced-parent terminals.
+
+**A terminal path is the highest known controlling entity, not proof of the ultimate parent.** No path rows mean no selected evidenced control chain—not that the entity is independent.
+
+Use `entity.control_resolution` for explicit, evidenced resolution states such as `unknown`, `known_no_controller`, `unresolved_identity`, or `multiple_evidenced_controllers`. Validate those payloads in the application. `known_no_controller` needs affirmative evidence and review; absence of data cannot establish it.
+
+Multiple direct controllers are allowed to preserve joint-control situations. A corporate acquisition workflow must explicitly retire the old edge; uniqueness by parent does not assume every entity has exactly one controller. Canonical **control** cycles are rejected when valid and knowledge intervals jointly overlap. Minority-equity crossholdings remain permitted.
+
+## 8. Status and dates are facts, not columns that get overwritten
+
+Independent project/building dimensions are:
+
+| Predicate | Example vocabulary to validate in application |
+| --- | --- |
+| `status.entitlement` | proposed, submitted, under_review, approved, denied, withdrawn |
+| `status.construction` | unknown, permitted, underway_verified, completed, suspended |
+| `status.power` | unknown, requested, contracted_evidenced, energized_evidenced |
+| `status.operations` | unknown, commissioning, operational, closed |
+| `case.status` | Agency-specific raw state plus reviewed normalized state |
+
+Suggested date payload:
+
+```json
+{
+  "earliest": "2027-01-01",
+  "latest": "2027-12-31",
+  "precision": "year",
+  "basis": "expected",
+  "raw_text": "expected in 2027"
+}
+```
+
+Never encode “2027” as an actual January 1 completion date. Keep expected completion separate from occupancy or operations. A building’s completion does not automatically complete every phase of its campus.
+
+The table can retain a reported county `YearBuilt`, an occupancy date, and a forecast opening without forcing them into a single “date built” value.
+
+## 9. Monetary and capacity semantics
+
+### Monetary amounts
+
+`capital_claim` preserves amount or range, currency, basis, geography, spend period, and stated inclusions. A site figure can be linked to a broader corporate commitment with `contains`; alternative reporting of the same disclosure can be linked as `duplicates`.
+
+Default aggregation state is `not_cleared`. There is intentionally **no universal capital SUM view**.
+
+Keep separate:
+
+- Permit work valuation.
+- Site investment.
+- Corporate capex plan.
+- Equity raised and debt committed.
+- Acquisition consideration.
+- Lease commitments.
+- Modeled capex.
+
+Before an aggregate is released, its report policy must choose compatible basis/currency/scope/period and resolve overlaps and replacements. `scope_reviewed` does not itself make a figure additive. Currency conversions need a separate sourced exchange-rate policy; they are not implemented here.
+
+### Capacity and area
+
+Metric definitions distinguish planned IT load, operational IT load, facility total load, requested utility service, contracted service, energized service, generator nameplate, and different floor-area bases.
+
+Store the reported value/unit and a normalized value/unit. Unit factors are immutable, and insertion computes normalized values rather than trusting client-supplied conversions.
+
+A generator nameplate figure can never silently replace IT MW. A campus capacity must not be added to its own building capacities without resolving containment and scope. The base schema defines the measurement separation; aggregation policy remains a reporting responsibility.
+
+## 10. Ingestion and source-update contracts
+
+### Transaction boundary
+
+For each bounded feed/scope:
+
+1. Acquire an adapter-owned lease/lock for the feed/scope.
+2. Create an ingestion run with `running` status.
+3. Retrieve all required pages and documents; archive versions and exact hashes.
+4. Record observations, extract assertions, and link evidence.
+5. Verify completeness and counts under that adapter’s source semantics.
+6. Mark the run successful, complete, and finished.
+7. Advance the checkpoint by exactly one revision to a later successful run.
+8. Commit normalized writes, selections/change events, outbox entries, and checkpoint atomically for the successful batch where applicable.
+
+Partial runs may retain raw observations for diagnosis, but cannot advance the production checkpoint. A run is frozen after it leaves `running`. Checkpoints cannot be deleted or reset through ordinary writes.
+
+**Adapter responsibility:** the database cannot order arbitrary JSON cursors. The writer must enforce cursor monotonicity, one writer per feed/scope, correct pagination, source-release semantics, and compare-and-swap/checkpoint locking. Initial checkpoint revision must be one.
+
+### Idempotency
+
+- Stable source identity is feed/epoch/native key.
+- A content revision has a monotonically assigned per-record revision, generated under a source-record lock.
+- Re-reading identical current content reuses the existing current version and adds an observation; it does not create a new canonical claim/event.
+- A content sequence A → B → A is three revisions. Therefore `(record,hash)` is **not** globally unique.
+- Assertion extraction uses an idempotency key derived from the source version, subject, predicate, payload/locator, and extractor version. It is not just a company name.
+- `change_event.dedupe_key` and `(event_id,destination_key)` prevent duplicate application-level alerts.
+- External notification delivery is at least once. Provider-side idempotency is needed to suppress duplicates after an ambiguous network timeout.
+
+### Disappearance and source failure
+
+Only a complete approved reconciliation can produce `record_observation.presence='missing'`. A failed run or a missing row does not prove project cancellation. Cancellation requires an evidence-backed case/project status claim.
+
+Store feed freshness, source publication freshness, last successful run, and latest attempted run separately. Do not relabel an old source as fresh simply because the collector fetched it today.
+
+## 11. Queries and report behavior
+
+The supplied examples cover:
+
+1. One project row with pre-aggregated statuses, participants, jurisdictions, and building count.
+2. Cases affecting a project’s buildings/phases without row-fanout duplication.
+3. As-of control paths.
+4. Distinct power/area measurements with reported and normalized units.
+5. A capital-disclosure ledger without an unsafe total.
+6. Exact source-version and evidence lineage at a knowledge cutoff.
+7. Source-health reporting.
+
+Historical source-evidence queries filter evidence and link creation by the requested knowledge timestamp. Current labels/membership in the convenience export are clearly identified as current metadata. Full historical identity exports need historical name facts and stored database snapshots or additional temporal link tables.
+
+Generate Excel and Markdown in the same **REPEATABLE READ read-only transaction** or from one exported database snapshot. Record the effective cutoff, knowledge cutoff, policy version, and coverage manifest in `export_run`. If using a PostgreSQL exported snapshot, it remains usable only while its exporting transaction stays open; a stored snapshot token is not a durable backup.
+
+An export UUID/report cutoff alone does not freeze non-temporal metadata. Archive the generated artifacts and their manifest so a report can be reproduced or audited later.
+
+## 12. Integrity, privileges, and performance
+
+### Enforced by the reference SQL
+
+- Cross-authority permit identity and issuer-scoped company registration identity.
+- Valid subtype/object identity and no subtype deletion.
+- Immutable issuing authority and project ownership keys.
+- Same-project building/phase foreign keys.
+- Append-only source versions, assertions, payloads, reviews, evidence, and audit events.
+- Compatible assertion payload type and selected subject/predicate.
+- Evidence availability and acceptance at the selected knowledge time.
+- Nonoverlapping canonical slot selections in both time dimensions.
+- Open-on-insert knowledge intervals and close-only historical updates.
+- Retraction after rejection or needs-review.
+- Unit dimensions and percentage bounds.
+- Canonical temporal control-cycle rejection, with serialized control-graph edits.
+- Successful/completed-run checkpoint requirements, revision progression, and run-history freezing.
+- Source/version/feed referential consistency for observations.
+
+### Required before production
+
+| Responsibility | Implementation requirement |
+| --- | --- |
+| Migration owner | Owns DDL; unavailable to runtime workers |
+| Ingestion role | Narrow insert/finalization/checkpoint API; no arbitrary provenance timestamps or dictionary edits |
+| Review/selector role | Authenticated decisions; server-stamped selection/retraction procedures; evidence policy |
+| Export role | Read-only views and approved evidence; no writes |
+| Notifier role | Outbox claim/update operations only; approved destinations |
+| Storage/security | Durable object storage, retention/backups, encryption, permitted redistribution, secret references |
+| Application validation | Date/status/name/address JSON schemas, allowed predicate/subject combinations, confidence policy |
+| Concurrent writers | Feed leases, per-source version locks, review/selection locks, retry behavior, concurrency tests |
+
+No runtime grants, row-level security policies, credential configuration, scheduler, or production API are deployed by these files. Administrative triggers cannot protect against a privileged owner/superuser. Production provenance integrity depends on controlled writers as well as constraints.
+
+Semantic dictionary rows are immutable after insertion. Correct a unit/predicate meaning by adding a new versioned code/migration, not by changing old interpretation in place.
+
+### Index and scale strategy
+
+The base schema indexes source identity/version time, object/predicate claims, latest reviews, parent/child relationships, aliases, case targets, project parcels, source health, review queues, due notifications, and event time. GiST exclusion indexes support temporal-slot constraints.
+
+At higher volume:
+
+- Add PostGIS for parcel/site geometry histories and spatial matching.
+- Partition high-volume observations/events/versions by time after measuring real workloads.
+- Introduce materialized current projections only with a tested invalidation strategy.
+- Add trigram/name normalization indexes for candidate search; fuzzy similarity is a matching clue, not evidence of identity.
+- Keep PDFs and images outside database rows.
+- Measure recursive ownership traversal and bulk selection workloads. The global control-write lock favors integrity over maximum write throughput in this reference design.
+
+## 13. Pilot mapping and rollout
+
+For the previously researched Prince William building layer:
+
+| Source field | Canonical destination |
+| --- | --- |
+| GlobalID | Source native key, after stability validation |
+| OBJECTID | Raw payload/debug information, not global building identity |
+| GPIN / PID | Jurisdiction/registry-qualified parcel IDs and source property links |
+| BuildingName / BuildingID | Candidate building identity and evidenced aliases |
+| BuildingStatus | Construction/other state assertion after source-specific mapping |
+| PermitCase / EnergovID | Case identifiers in the issuing authority’s namespace |
+| PlanningCaseNumber | Planning-case identifier and reviewed case links |
+| YearBuilt / OCCDate | Date assertions preserving reported precision and milestone meaning |
+| GFA / BPGFA / ApprovedGFA / PermittedGFA | Separate metric meanings and scope bases |
+| LastEditDate | Source-modified time, not our knowledge clock |
+
+This is a mapping design, **not a live ingestion result**. The earlier direct query attempt returned HTTP 403; approved data access is still required. Do not treat metadata/catalog accessibility as a working production feed.
+
+Recommended implementation sequence:
+
+1. Load identity/source/evidence tables and the ledger in a new development database.
+2. Register jurisdiction, authority, case namespaces, and company-ID issuers under controlled configuration.
+3. Import existing tracker rows as candidates; attach row-level source evidence and classify capital scope before publishing totals.
+4. Implement one approved source adapter and repeatable baseline/replay tests.
+5. Add reviewed case/parcel/project/entity matching and controlled temporal selection.
+6. Generate paired reports; activate only the authorized notification destination.
+7. Expand sources after retrieval, identity, provenance, and source-health tests pass.
+
+## 14. Validation and known boundaries
+
+The delivered schema was loaded in a fresh local PostgreSQL 16 database. **37 synthetic rollback-only regression tests passed**, and all seven example queries executed against the empty canonical schema. Tests include same-number permits/registrations in different jurisdictions, typed payloads, temporal corrections, parent chains, control cycles, minority crossholdings, review retraction, unit normalization, checkpoint safety, and immutable source history.
+
+This is not a production-load benchmark, concurrent-writer stress test, permissions audit, or live-source integration test. No actual projects, permits, companies, financial figures, or alerts were imported by the tests.
+
+The design is intentionally explicit about remaining boundaries: authenticated/server-stamped write APIs and role grants, adapter-specific collection semantics, full temporal histories for structural links, geometry matching, complete registered-agent/contact data, formal merge/unmerge tooling, and report-level financial deduplication policies.
+
+### Technical references
+
+- [PostgreSQL 16 range types and exclusion constraints](https://www.postgresql.org/docs/16/rangetypes.html)
+- [PostgreSQL 16 recursive queries and cycle detection](https://www.postgresql.org/docs/16/queries-with.html)
+
+The model follows the earlier permit-intelligence blueprint’s distinction between discovery, verified status, corporate relationships, and nonadditive capital disclosures. It does not claim complete nationwide permit coverage or a definitive ultimate-parent registry.
