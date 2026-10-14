@@ -1,0 +1,48 @@
+name: Permit Intelligence local checks
+on:
+  pull_request:
+    paths:
+      - 'app/**'
+      - 'scripts/**'
+      - 'migrations/**'
+      - 'config/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '*.config.ts'
+      - 'tsconfig.json'
+      - '.github/workflows/permit-intelligence-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: permit-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  local-checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Install pinned package manager and local PostgreSQL
+        run: |
+          npm install --global pnpm@11.25.0
+          sudo apt-get update -qq
+          sudo apt-get install -y postgresql-16 postgresql-contrib
+          sudo pg_ctlcluster 16 main start || pg_isready
+          pnpm install --frozen-lockfile
+      - name: Initialize isolated local database and validate reference
+        run: |
+          pnpm setup:local
+          pnpm migrate
+          pnpm test:schema
+      - name: Offline application and browser tests
+        run: |
+          pnpm test:local
+          pnpm exec playwright install --with-deps chromium
+          pnpm test:e2e:local
+      - name: Build artifact only (no deployment)
+        run: pnpm build

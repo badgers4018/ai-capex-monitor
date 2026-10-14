@@ -1,0 +1,237 @@
+BEGIN
+SET
+CREATE TABLE
+CREATE FUNCTION
+INSERT 0 2
+INSERT 0 2
+INSERT 0 2
+INSERT 0 2
+INSERT 0 3
+INSERT 0 1
+INSERT 0 11
+INSERT 0 2
+INSERT 0 1
+INSERT 0 2
+INSERT 0 4
+INSERT 0 2
+INSERT 0 2
+INSERT 0 2
+SET CONSTRAINTS
+NOTICE:  PASS: source IDs are scoped by feed
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: A to B to A creates three revisions
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: same permit number in different authorities is allowed
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: campus and building grains stay separate
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: duplicate case identity is rejected
+NOTICE:  PASS: case namespace must match issuing authority
+NOTICE:  PASS: building cannot attach to another project phase
+NOTICE:  PASS: raw versions are immutable
+NOTICE:  PASS: object registry requires subtype
+NOTICE:  PASS: subtype deletion cannot orphan object registry
+NOTICE:  PASS: issuing authority cannot be rewritten
+DO
+INSERT 0 2
+INSERT 0 2
+NOTICE:  PASS: same company registry number in different issuers is allowed
+ ok 
+----
+ 
+(1 row)
+
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE TABLE
+INSERT 0 2
+             select_claim             
+--------------------------------------
+ 4d7859c8-99e0-4d5a-a0e7-b5754711ebd6
+(1 row)
+
+NOTICE:  PASS: conflicting selected temporal slots are rejected
+NOTICE:  PASS: arbitrary slots cannot bypass uniqueness
+DO
+UPDATE 1
+             select_claim             
+--------------------------------------
+ 3969e7dc-a62c-4647-aa69-737a39aa6acc
+(1 row)
+
+NOTICE:  PASS: knowledge-asof before correction sees old fact
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: knowledge-asof after correction sees replacement fact
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: selected history cannot be overwritten
+DO
+INSERT 0 1
+NOTICE:  PASS: rejected assertions stop appearing as current facts
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: review retraction preserves prior historical knowledge
+ ok 
+----
+ 
+(1 row)
+
+INSERT 0 3
+             select_claim             
+--------------------------------------
+ 0d222eb5-9c85-49ae-9748-ed4f3bcbee34
+ 052ea26d-3404-4fb1-85c9-f44997001d8d
+ 2973b2fd-c2ed-4291-a09a-be67afbe6279
+(3 rows)
+
+NOTICE:  PASS: parent chain resolves multiple levels
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: ownership boundary uses half-open dates
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: no known parent returns no invented ultimate parent
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: overlapping control cycles are rejected
+DO
+INSERT 0 2
+             select_claim             
+--------------------------------------
+ 3e5c1302-899b-4e70-97f5-cf130956a89f
+ 0383e941-f460-491d-b559-1b8294b137b5
+(2 rows)
+
+NOTICE:  PASS: minority crossholdings are not mistaken for control
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: ownership percent bounds are enforced
+DO
+INSERT 0 1
+NOTICE:  PASS: kW converts to MW without conflating measures
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: area units cannot populate power metrics
+DO
+INSERT 0 2
+NOTICE:  PASS: landowner and operator are independent roles
+ ok 
+----
+ 
+(1 row)
+
+INSERT 0 2
+INSERT 0 1
+NOTICE:  PASS: failed runs cannot advance checkpoint
+NOTICE:  PASS: checkpoint revisions cannot skip
+NOTICE:  PASS: finished ingestion runs cannot invalidate checkpoints
+NOTICE:  PASS: checkpoint cannot be deleted and reset
+NOTICE:  PASS: checkpoint must advance to a later successful run
+DO
+NOTICE:  PASS: failed checkpoint writes preserve prior cursor
+ ok 
+----
+ 
+(1 row)
+
+INSERT 0 2
+INSERT 0 1
+NOTICE:  PASS: capital disclosures remain nonadditive by default
+ ok 
+----
+ 
+(1 row)
+
+NOTICE:  PASS: unknown validity cannot be labeled evidenced
+DO
+NOTICE:  PASS: fact cannot be selected before evidence was available
+DO
+SET CONSTRAINTS
+ passed_tests 
+--------------
+           37
+(1 row)
+
+                             name                             
+--------------------------------------------------------------
+ A to B to A creates three revisions
+ arbitrary slots cannot bypass uniqueness
+ area units cannot populate power metrics
+ building cannot attach to another project phase
+ campus and building grains stay separate
+ capital disclosures remain nonadditive by default
+ case namespace must match issuing authority
+ checkpoint cannot be deleted and reset
+ checkpoint must advance to a later successful run
+ checkpoint revisions cannot skip
+ conflicting selected temporal slots are rejected
+ duplicate case identity is rejected
+ fact cannot be selected before evidence was available
+ failed checkpoint writes preserve prior cursor
+ failed runs cannot advance checkpoint
+ finished ingestion runs cannot invalidate checkpoints
+ issuing authority cannot be rewritten
+ kW converts to MW without conflating measures
+ knowledge-asof after correction sees replacement fact
+ knowledge-asof before correction sees old fact
+ landowner and operator are independent roles
+ minority crossholdings are not mistaken for control
+ no known parent returns no invented ultimate parent
+ object registry requires subtype
+ overlapping control cycles are rejected
+ ownership boundary uses half-open dates
+ ownership percent bounds are enforced
+ parent chain resolves multiple levels
+ raw versions are immutable
+ rejected assertions stop appearing as current facts
+ review retraction preserves prior historical knowledge
+ same company registry number in different issuers is allowed
+ same permit number in different authorities is allowed
+ selected history cannot be overwritten
+ source IDs are scoped by feed
+ subtype deletion cannot orphan object registry
+ unknown validity cannot be labeled evidenced
+(37 rows)
+
+ROLLBACK

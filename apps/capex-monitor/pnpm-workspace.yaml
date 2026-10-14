@@ -1,0 +1,3 @@
+# Standalone pnpm root for the existing cockpit app (keeps it independent of the permit module root).
+packages:
+  - "."

@@ -1,0 +1,12 @@
+{
+  "asOf": "2026-10-13",
+  "ticker": "NTAP",
+  "reason": "NetApp replaced PSTG after Yahoo Finance reported PSTG as delisted/no data during live-universe collection.",
+  "reviews": [
+    {"reviewer":"AI infrastructure equity analyst","stance":"capex-beneficiary","conviction":"medium","rationale":"NetApp benefits indirectly as AI buildouts increase enterprise demand for high-performance all-flash storage and data pipelines, but its diversified storage portfolio and downstream position make the operating leverage to AI capex positive rather than direct and concentrated."},
+    {"reviewer":"Data-center credit analyst","stance":"capex-beneficiary","conviction":"medium","rationale":"NetApp benefits indirectly as AI infrastructure spending drives enterprise demand for high-performance storage, all-flash arrays, and data pipelines, but its diversified storage exposure makes the linkage less direct than a pure-play capex supplier."},
+    {"reviewer":"AI-infrastructure capex analyst","stance":"capex-beneficiary","conviction":"high","rationale":"NetApp benefits from AI-driven enterprise storage refreshes, all-flash adoption and data-pipeline growth, but its diversified enterprise infrastructure exposure makes the linkage positive and indirect rather than a direct high-operating-leverage capex winner."},
+    {"reviewer":"Semiconductor supply-chain analyst","stance":"capex-beneficiary","conviction":"medium","rationale":"NetApp benefits indirectly as AI infrastructure spending expands enterprise data infrastructure, all-flash storage and AI data pipelines, but its diversified storage exposure makes the operating leverage less direct than compute, networking or power beneficiaries."},
+    {"reviewer":"Institutional portfolio strategist","stance":"capex-beneficiary","conviction":"medium","rationale":"NetApp benefits indirectly as AI workloads increase enterprise data storage, all-flash infrastructure and pipeline requirements, but its diversified enterprise-storage exposure limits the direct operating leverage of a pure AI-capex supplier."}
+  ]
+}

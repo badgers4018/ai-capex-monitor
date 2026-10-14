@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1782515534888,
+      "tag": "0000_quick_synch",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1783886905086,
+      "tag": "0001_glorious_morlocks",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1784489067709,
+      "tag": "0002_acoustic_luckman",
+      "breakpoints": true
+    }
+  ]
+}

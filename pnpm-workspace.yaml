@@ -1,0 +1,10 @@
+allowBuilds:
+  esbuild: true
+# Advisory fixes; ExcelJS imports only uuid.v4 (verified and export-tested).
+overrides:
+  qs: 6.16.0
+  path-to-regexp: 0.1.13
+  body-parser: 1.20.8
+  'exceljs>uuid': 11.1.1
+  tinypool: 2.1.2
+  'vite>esbuild': 0.28.1
