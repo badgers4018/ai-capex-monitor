@@ -7,6 +7,8 @@ Validation date: 2026-10-14 UTC.
 
 Publication variant: the original tested implementation remains at local commit `0529c521d8604b2ad6d72ab3969edfa496df12ed`. GitHub rejected its active workflow file for missing workflow-write permission. This clean branch preserves all application code and retains CI at `docs/implementation/permit-intelligence-ci.example.yml` for authorized manual installation; no automatic CI is enabled. No connector permissions were changed.
 
+Published branch: [feat/permit-intelligence-publish](https://github.com/badgers4018/ai-capex-monitor/tree/feat/permit-intelligence-publish). Open implementation PR: [#2](https://github.com/badgers4018/ai-capex-monitor/pull/2), targeting the design branch while [schema PR #1](https://github.com/badgers4018/ai-capex-monitor/pull/1) remains unmerged. Local 37 schema, 66 application and 11 browser tests plus build passed again before publication. No merge or deployment performed.
+
 ## Architecture
 
 New TypeScript API/collector + React shell, parameterized PostgreSQL (`pg`), immutable original `dc` schema, private content-addressed local storage. No existing frontend/backend, AI backend, feature bus, or shared submodule library was available; this release uses explicit local service contracts rather than inventing imports to nonexistent components. No AI inference is needed. The financial weekly files remain untouched.
@@ -25,7 +27,7 @@ New TypeScript API/collector + React shell, parameterized PostgreSQL (`pg`), imm
 | D2 UI                 | Routes, filters, evidence, reviewer controls, mobile, empty/error/loading states                       | 11 browser tests; WCAG A/AA audit on principal screens; page-error checks                   | Passed locally                                                         |
 | D3 Reports            | One snapshot for XLSX/Markdown; separate weekly appendix                                               | Matching IDs/counts, cutoffs/manifests, no combined capital sum, original tape unchanged    | Passed locally; actual weekly scheduler hook unavailable               |
 | E1 Operations         | Private bind, probes/runbook, backup/restore smoke check, hosted-build guard                           | Loopback HTTP 200; restore counts match; hosted build rejected; full dependency audit clean | Passed locally; production runtime/identity/backup policy not approved |
-| E2 Handoff            | TEST-only screenshots, contracts, runbook, QA report, stacked PR                                       | Checksum/secret/scope publication checks                                                    | Prepared; PR link/status recorded after creation                       |
+| E2 Handoff            | TEST-only screenshots, contracts, runbook, QA report, stacked PR                                       | Checksum/secret/scope publication checks                                                    | Published: open PR #2; no merge/deploy                                  |
 
 ## Validation log
 
