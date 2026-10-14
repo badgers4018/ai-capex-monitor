@@ -1,0 +1,14 @@
+# Prevent Git diff and whitespace checks from treating binary product assets as text.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.xlsx binary
+*.xls binary
+*.zip binary
+
+# Unified diff blank-context spaces are semantic; never normalize them as prose.
+patches/*.patch whitespace=-trailing-space
