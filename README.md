@@ -4,6 +4,10 @@ Capital Misallocation reconstructed desk.
 
 **Do not use Manus as the host.** `meissnermonitor.manus.space` is behind OAuth and the owning account reports deleted.
 
+## Data-center permit intelligence
+
+The [database-design package](docs/data-center-permit-intelligence/README.md) describes an evidence-backed PostgreSQL model for projects, permits, and parent companies across jurisdictions. It includes the specification, schema, tests, example queries, data dictionary, ER diagram, and downloadable bundle. This is a tested reference design, not a deployed collector or populated registry; it does not change the financial book or weekly contract below.
+
 ## Weekly run
 
 Linked as **AI Capex weekly tape**. Sunday 06:00 America/Los_Angeles. First fire under this spec: 6 Sep 2026.
