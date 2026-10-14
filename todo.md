@@ -1,0 +1,102 @@
+- [x] Upgrade to full-stack (web-db-user) for backend API
+- [x] Connect AI search bar to real LLM API with spending data context
+- [x] Add local fallback for instant responses when LLM unavailable
+- [x] Add Cmd+K keyboard shortcut for search focus
+- [x] Add vitest tests for AI search endpoint
+- [x] Add "CAPITAL MISALLOCATION" subtitle above title in funky white bold caps (Bebas Neue font, tracking-[0.2em])
+- [x] Upload and integrate sacred geometry brand logo across all pages (nav, hero, footer)
+- [x] Fix font readability and element overlap issues site-wide (FlowchartSection SVG, FCFCountdown, EmailSubscription theme-adaptive)
+- [x] Make the design visually stunning (polish pass)
+- [x] Add light/dark theme toggle switch (sun/moon icon in nav, persists to localStorage)
+- [x] Redesign navigation links to look like clickable buttons/pills instead of plain text
+- [x] Redesign FlowchartSection with better spatial layout and non-overlapping nodes
+- [x] Add click-to-expand on flowchart nodes (mobile-friendly tap support)
+- [x] Implement smooth scroll-spy animation for nav pills
+- [x] Add filtering option for data/content sections (Market Data + Spreadsheet sections)
+- [x] Add CoreWeave (CRWV) to Market Data, Spreadsheet, and Company Deep Dive
+- [x] Add Nebius (NBIS) to Market Data, Spreadsheet, and Company Deep Dive
+- [x] Remove TSMC (TSM) from all sections (kept contextual mentions in narratives)
+- [x] Mobile fix: Chatbot answer container needs max-height + overflow scroll
+- [x] Mobile fix: Sensitivity Matrix table needs horizontal scroll wrapper
+- [x] Mobile fix: Compare table needs horizontal scroll wrapper
+- [x] Mobile fix: Flowchart needs mobile-friendly layout (min-w-[640px] with overflow-x-auto)
+- [x] Mobile fix: Hero section too tall - compress logo, fonts, padding
+- [x] Mobile fix: Company cards text overflow on 2-col grid
+- [x] Mobile fix: Market Data filter pills should be horizontally scrollable
+- [x] Mobile fix: Compare company selector chips should be scrollable
+- [x] Mobile fix: Scenario section too verbose on mobile
+- [x] Mobile fix: Sticky search bar + nav compete for vertical space (nav hides on scroll down)
+- [x] Mobile fix: Stats grid spacing tighter on mobile
+- [x] Update HeroSection stock ticker with latest prices (Jun 27 close)
+- [x] Update MarketDataSection with fresh stock prices and Goldman Sachs $670B capex figure
+- [x] Update SpreadsheetSection data points with latest figures
+- [x] Update NarrativeSection with Goldman Sachs revised forecast and Dell'Oro $1T figure
+- [x] Add ChangelogFeed entries for this week's major events (GS S&P 8000, tech sell-off, Dell'Oro $1T, Nasdaq-100)
+- [x] Update Excel spreadsheet with new data (3-sheet .xlsx with prices, capex, weekly changes)
+- [x] Rebuild FlowchartSection with HTML/CSS Grid nodes (SVG only for connection lines)
+- [x] Add global clamp() fluid typography utilities to index.css
+- [x] Fix text-[9px] and text-[10px] across all components (replaced with text-fluid-xs/text-fluid-sm)
+- [x] Add mobile vertical stacked layout for flowchart on screens < 640px
+- [x] Create MetaCloudEntry component analyzing Meta's cloud service competitive impact
+- [x] Integrate MetaCloudEntry section into Home.tsx and navigation
+- [x] Create interactive CapacityTimeline component (Meta capacity vs neocloud contracts)
+- [x] Integrate CapacityTimeline into Home.tsx and navigation
+- [x] Key Fundamentals section: Fetch 2022-2025 actuals from financial APIs for all 10 companies
+- [x] Key Fundamentals section: Source 2026E/2027E analyst consensus estimates
+- [x] Key Fundamentals section: Build KeyFundamentals.tsx component with sticky headers, company-grouped rows, color-coded cells
+- [x] Key Fundamentals section: Integrate into Home.tsx between Market Data and Strategy sections
+- [x] Key Fundamentals section: Add "Fundamentals" nav pill to NavigationBar.tsx
+- [x] Key Fundamentals section: Mobile-responsive horizontal scroll for wide table
+- [x] Key Fundamentals section: QA validation - verify all cells populated, run build
+- [x] Fix Key Fundamentals table: show "Revenue" as a labeled metric row, ticker/company name stays in header row above it
+- [x] Run 10 autoresearch loops on the site
+- [x] Add "Circular Financing Risk" section: Nvidia-funds-its-own-customers dynamic (NBIS $2B, CRWV GPU financing) as systemic risk indicator
+- [x] Implement automated weekly refresh using Heartbeat SDK to re-run research loops and auto-update changelog
+- [x] Add changelog_entries DB table for durable storage of refresh results
+- [x] Wire weeklyRefreshHandler to store findings in DB and update changelog dynamically
+- [x] Create AGENT cron for deep research that posts findings back to /api/scheduled/agent-research-callback
+- [x] Deploy and verify scheduled endpoints are reachable (Heartbeat HTTP cron created, AGENT schedule updated to Sunday 06:00 UTC)
+- [x] Add Capex/Revenue ratio sparkline to Key Fundamentals table header rows
+- [x] Implement search bar and category filter pills for ChangelogFeed
+- [x] Enhance Circular Financing Risk diagram with animated flow, detailed tooltips, and richer visuals
+- [x] Add "Debt Maturity Wall" timeline showing CoreWeave, Oracle, Nebius debt maturities and refinancing risk windows
+- [x] Wire AI search bar to include Circular Financing data context for risk-related queries
+- [x] Add dark/light theme toggle to NavigationBar (already implemented)
+- [x] Update hero badge: remove "10 Karpathy Loops + AI Council" text, keep date, show "Last Updated: July 12, 2026"
+- [x] Build Scenario Calculator: adjustable sliders for demand growth %, interest rates, GPU prices; real-time FCF and debt serviceability output per company
+- [x] Add interactive tooltips to Debt Maturity Wall timeline bars showing maturity details, amounts, risk level on hover
+- [x] Build "Scenario Deep Dive" section: Bull/Base/Bear tiles with thesis, probability, assumptions, outcomes, winners/losers, historical analog
+- [x] Run AI council of 5 experts (macro strategist, semiconductor analyst, credit analyst, energy specialist, venture investor) to stress-test scenarios
+- [x] Synthesize council output into unified view with consensus/divergence summary
+- [x] Design at Wall Street research note quality with green/amber/red color coding
+- [x] Build Position Builder: ticker selection from scenario winners/losers, long/short toggle, probability-weighted portfolio summary with expected returns
+- [x] Add 180-day correlation matrix to Position Builder using real daily return data
+- [x] Expand ticker universe to curated 50 direct AI capex-exposed names, ranked by market cap within the documented screen
+- [x] Classify all 50 tickers into Bull/Base/Bear structural exposure lenses via five-review AI council
+- [x] Fetch 180-day correlation data for all 50 tickers
+- [x] Update ScenarioDeepDive, PositionBuilder, CorrelationMatrix with 50 tickers
+- [x] Add TradingView integration: deep links, advanced chart widget, watchlist export
+
+## Quick Wins (Cognitive Orchestrator Evaluation)
+- [x] QW1: Change primary accent from crimson to premium gold (brand only, kept red for risk indicators)
+- [x] QW2: Add font-variant-numeric: tabular-nums to all font-mono elements globally
+- [x] QW3: Add color-scheme: dark/light to :root + meta theme-color tags
+- [x] QW4: Remove maximum-scale=1 from viewport meta (accessibility pinch-zoom)
+- [x] QW5: Add aria-label to all icon-only buttons (search clear, mobile menu, position remove, changelog clear)
+- [x] QW6: Replace transition-all with specific properties across 8+ components
+- [x] QW7: Condense hero to 100vh (moved FCF countdown below hero, reduced spacing)
+- [x] QW8: Group 20 nav items into 5 dropdown categories (Overview, Data, Risk, Strategy, Tools)
+- [x] QW9: Add sticky Upgrade to Pro CTA in nav (desktop + mobile)
+- [x] QW10: Replace "..." with "…" and add autocomplete="email" + name attr
+
+## Pro Paywall (Phase 1)
+- [x] Lock AI search behind Pro paywall with premium badge upsell UI
+- [x] Generate Pro Intelligence badge asset (gold padlock, Bloomberg aesthetic)
+- [x] Clicking locked bar / sample questions scrolls to #subscribe section
+- [x] Remove XSS risk (dangerouslySetInnerHTML eliminated with lock)
+- [x] Remove unbounded LLM cost exposure (no more public ai.search calls)
+
+## Spreadsheet Sort & Filter
+- [x] Add sort dropdown (by Growth %, Category, Metric A-Z) to SpreadsheetSection
+- [x] Add text search input to filter rows by keyword across Metric/Notes/Source columns
+- [x] Show row count and active filter state in footer bar

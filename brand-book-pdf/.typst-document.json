@@ -1,0 +1,9 @@
+{
+  "entry": "main.typ",
+  "mode": "markdown",
+  "source": {
+    "original_path": "/home/ubuntu/tech-spending-analysis/capital-misallocation-ai-capex-monitor-brand-book.md",
+    "prepared_path": "source.md"
+  },
+  "theme": "report-theme.typ"
+}

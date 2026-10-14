@@ -1,55 +1,131 @@
-# AI Capex Boom Monitor
+# Capital Misallocation — AI Capex Monitor
 
-Capital Misallocation reconstructed desk.
+> **A trillion-dollar buildout is now searching for its economic clearing price.**
 
-**Do not use Manus as the host.** `meissnermonitor.manus.space` is behind OAuth and the owning account reports deleted.
+Capital Misallocation — AI Capex Monitor is an evidence-led research application for examining the investment, financing, power, and return dynamics of AI infrastructure. It is designed as a **research instrument**, not a promotional market feed: the product separates observed evidence, modeled assumptions, editorial inference, and scenario output.
 
-## Weekly run
+**Not investment advice.**
 
-Linked as **AI Capex weekly tape**. Sunday 06:00 America/Los_Angeles. First fire under this spec: 6 Sep 2026.
+## What is included
 
-Contract: [`weekly/README.md`](weekly/README.md). Output: `weekly/YYYY-MM-DD.md`.
+- **Editorial Paper** landing experience (white canvas, black ink), with a persistent optional **Dark Research** workspace.
+- A curated **50-name AI-capex universe**, ranked by market capitalization within the documented direct-exposure screen.
+- Dated adjusted-close price history and a **50 × 50 Pearson correlation matrix**.
+- Company comparison, evidence ledger, capex/return analysis, power-grid constraints, and source methodology.
+- Circular-financing and off-balance-sheet-risk surfaces, debt maturity wall, risk radar, and FCF model revalidation.
+- Interactive scenarios, sensitivity analysis, scenario deep dive, 50-name exposure map, and portfolio-position builder.
+- TradingView chart/watchlist handoff and downloadable watchlist symbols.
+- Database-backed research changelog and architecture for scheduled research refreshes.
+- Capital Misallocation brand system, product brand book, and authorized interim logo derivatives.
 
-Sources this run:
+## Product principles
 
-- **LIVE** IBKR equity (Mag5, NVDA, AVGO, TSM, CRWV, NBIS, IREN, VRT, HYG, LQD, SPY)
-- **LIVE** FRED (10y, IG OAS, HY OAS, VIX, 2s10s)
-- **LIVE** EDGAR 7-day footnote scan (OBS/leases/purchases only with a page cite)
-- **LIVE** guidance / ratings / issuance search
-- **MISSING** Markit/Bloomberg 5y CDS — CRWV 855 bp and ORCL 215 bp lagged; remaining named rows empty. Do not invent.
-- **LOCKED** OBS $1.62T / combined $2.31T as-of 2026-07-20 until a filing cites a change.
+1. **Thesis → evidence → assumptions → readout → sources.**
+2. Do not present modeled values as observed data.
+3. Prefer investor relations, filings, earnings calls, regulators, utilities, and other primary sources.
+4. A neutral “no update” is better than invented movement.
+5. The AI Search interface is intentionally **disabled** to avoid unbounded public LLM cost. Do not re-enable it without authentication, entitlement, source validation, rate limiting, and budget controls.
 
-Reject: Amazon OBS zeroed, any line item >30% WoW without a page cite, invented CDS.
+## Technology
 
-## Evaluation — 2026-09-05
+| Layer | Stack |
+|---|---|
+| Client | React 19, TypeScript, Vite, Tailwind CSS 4, Wouter |
+| UI/data | TanStack Query, tRPC 11, Zod, SuperJSON, Radix UI, Recharts |
+| Server | Express 4, tsx |
+| Database | MySQL/TiDB, Drizzle ORM |
+| Testing | Vitest; Playwright is used for browser QA |
 
-| Surface | Status |
-| --- | --- |
-| GitHub `main` | Stub app + weekly contract. The reconstructed React tree lives in the Grok app, not here. |
-| GitHub Pages | 404. Pages is not enabled. |
-| Vercel `ai-capex-monitor-capital-misallocation.vercel.app` | SSO-gated. Cannot be used as a public host. |
-| Manus | OAuth wall. Do not depend on it. |
-| Prior Grok workspace `/home/workdir/artifacts/ai-capex-monitor` | Gone. |
+## Local development
 
-**Verdict:** the public hosts are empty or gated. The 25-section cockpit plus node schematic and Sunday run live in the current Grok app. CDS is the honest gap versus the old site — two lagged prints, the rest named and missing.
+### Prerequisites
 
-## Canonical book
+- Node.js 22+
+- pnpm 10+
+- MySQL-compatible database for database-backed features
 
-- **OBS** $1.62T / **combined** $2.31T, as-of 2026-07-20
-- **Tape:** AMZN $220B, GOOG $195–205B, MSFT $175B printed / $190B economic, META $125–145B
-- **FCF-zero clock:** 15 Sep 2026
-- CRWV 5y CDS 855 bp (29 Jul, lagged). ORCL 5y CDS 215 bp (lagged).
+### Commands
 
-## 25-section cockpit
+```bash
+pnpm install --frozen-lockfile
+pnpm test
+pnpm check
+pnpm build
+pnpm dev
+```
 
-**Tape** 01 Opening tape · 02 FCF-zero clock · 03 Print vs economic · 04 Capex vs OCF
+### Environment
 
-**Credit** 05 OBS book · 06 Combined leverage · 07 Uncommenced leases · 08 Purchase commits · 09 Debt wall · 10 Credit tape
+The original production environment supplied database, OAuth, storage, and data-service values. Configure new equivalents in a private environment file or your host’s secret manager. **Never commit database URLs, OAuth secrets, API keys, session cookies, or user exports.**
 
-**Circuit** 11 Circular financing · 12 Equity dilution · 13 LAG7 vs picks
+## Data refresh
 
-**Physics** 14 Useful life · 15 Capex / GDP · 16 Historical rhymes · 17 Power · 18 Revenue gap · 19 Scenarios
+The 50-name data is a dated research data set, not a real-time quote claim.
 
-**Ledger** 20 Weekly credit run · 21 June ledger · 22 Four Horsemen · 23 CMSS Case 49 · 24 Source ledger · 25 Method
+```bash
+# Rebuild 50-name market/correlation data using the approved data provider
+AI_CAPEX_AS_OF=YYYY-MM-DD manus-node scripts/refresh-ai-capex-universe.mjs
 
-Not investment advice.
+# Audit universe selection documentation
+manus-node scripts/audit-ai-capex-universe.mjs
+
+# Export public research records only; intentionally excludes users/subscribers
+DATABASE_URL='mysql://…' node scripts/export-public-handoff-data.mjs output.json
+```
+
+Key generated data includes:
+
+- `data/ai_capex_market_data_2026-10-13.json`
+- `data/ai_capex_correlation_2026-10-13.json`
+- `data/ai_capex_council_consensus_2026-10-13.json`
+- `data/ai_capex_universe_manifest.json`
+
+Read the dated research audits before making current claims:
+
+- `research_refresh_audit_2026-09-27.md`
+- `research_refresh_audit_2026-10-04.md`
+- `research_refresh_audit_2026-10-11.md`
+
+## Repository map
+
+```text
+client/                  React application
+  src/pages/             Landing and dashboard composition
+  src/components/        Research, risk, scenario, data and brand surfaces
+  src/data/              Bundled dated data used by the interactive workspace
+  src/contexts/          Persistent theme and motion preferences
+server/                  tRPC routes, market data, scheduled research handlers
+drizzle/                 Database schema and migrations
+data/                    Reproducible 50-name market, correlation and council files
+scripts/                 Data refresh, audit, consensus and public-export scripts
+references/              Research and implementation reference material
+```
+
+## Brand and accessibility
+
+- Parent brand: **Capital Misallocation**; product descriptor: **AI Capex Monitor**.
+- Editorial type: Newsreader; UI/body: IBM Plex Sans; data/tickers: IBM Plex Mono.
+- Default experience: **Editorial Paper** (`#FFFFFF` / `#111111`), persisted per visitor.
+- Dark Research and Quiet / Standard / Dynamic motion are optional persistent preferences.
+- Cyan is a semantic data/status color. Gold is archival/reference emphasis. Oxblood indicates risk.
+- Respect `prefers-reduced-motion`; do not make animation required for comprehension.
+
+The complete product-specific system is documented in:
+
+- `capital-misallocation-ai-capex-monitor-brand-book.md`
+- `capital-misallocation-ai-capex-monitor-brand-book.pdf`
+
+## Scheduled research and security
+
+`server/scheduledRefresh.ts` contains the weekly-research and authenticated agent-callback architecture. Before enabling automatic research in a new environment:
+
+1. Add source URL/provenance tracking and deduplication.
+2. Gate ingestion behind cron/service authentication.
+3. Establish review, budget, retry, and alerting controls.
+4. Keep LLM access server-side and rate-limited.
+
+The original app’s database tables are defined in `drizzle/schema.ts`. Do not export or seed user/subscriber data without an explicit privacy-approved migration.
+
+## License
+
+This project is available under the [MIT License](LICENSE).
