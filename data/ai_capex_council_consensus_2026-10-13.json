@@ -1,0 +1,881 @@
+{
+  "asOf": "2026-10-13",
+  "methodology": "Five independent structural AI-infrastructure reviews reconciled by majority vote. This is a capex-thesis exposure classification, not a price target or investment recommendation.",
+  "reviewers": [
+    "AI Infrastructure Equity Analyst",
+    "Data-Center Credit and Financing Analyst",
+    "Power and Grid Infrastructure Analyst — structural research analysis only, not investment advice.",
+    "Semiconductor and Networking Supply-Chain Analyst",
+    "Institutional Portfolio Strategist"
+  ],
+  "universeSize": 50,
+  "byStance": {
+    "capex-winner": 14,
+    "capex-beneficiary": 25,
+    "balanced": 4,
+    "capex-risk": 7
+  },
+  "sharedThemes": [
+    "Accelerators, networking, power management, cooling, and grid interconnection are the clearest direct buildout bottlenecks.",
+    "Hyperscalers are both capacity buyers and monetizers, so cash-flow discipline and utilization matter alongside demand.",
+    "Power availability, transmission, cooling, and permitted sites can redirect the capex pool without reducing total compute ambition.",
+    "Neocloud and converted power-site models carry asymmetric funding, utilization, counterparty, and execution exposure."
+  ],
+  "caveats": [
+    "The reviews used durable business-model relationships and the documented universe—not current valuation, earnings estimates, or price targets.",
+    "A capex-winner or capex-risk classification is not a forecast of share-price performance or personalized investment advice.",
+    "Classifications should be refreshed as financing, power contracts, capacity delivery, customer concentration, and competitive conditions change."
+  ],
+  "classifications": [
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft",
+      "category": "Hyperscaler",
+      "stance": "capex-beneficiary",
+      "conviction": "high",
+      "voteCount": 4,
+      "reviewCount": 5,
+      "agreement": "strong",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 4,
+        "balanced": 1,
+        "capex-risk": 0
+      },
+      "rationale": "Azure capacity and AI services monetize installed compute, although Microsoft's broad software franchise moderates its capex sensitivity."
+    },
+    {
+      "ticker": "AMZN",
+      "name": "Amazon",
+      "category": "Hyperscaler",
+      "stance": "capex-beneficiary",
+      "conviction": "high",
+      "voteCount": 4,
+      "reviewCount": 5,
+      "agreement": "strong",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 4,
+        "balanced": 1,
+        "capex-risk": 0
+      },
+      "rationale": "AWS capacity and custom silicon make Amazon a cloud-build beneficiary, tempered by its large retail and logistics businesses."
+    },
+    {
+      "ticker": "GOOGL",
+      "name": "Alphabet",
+      "category": "Hyperscaler",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 3,
+      "reviewCount": 5,
+      "agreement": "majority",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 3,
+        "balanced": 2,
+        "capex-risk": 0
+      },
+      "rationale": "Google Cloud and TPU deployment can monetize incremental AI capacity, while advertising remains a major non-infrastructure earnings driver."
+    },
+    {
+      "ticker": "META",
+      "name": "Meta Platforms",
+      "category": "Hyperscaler",
+      "stance": "balanced",
+      "conviction": "medium",
+      "voteCount": 4,
+      "reviewCount": 5,
+      "agreement": "strong",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 1,
+        "balanced": 4,
+        "capex-risk": 0
+      },
+      "rationale": "Meta's internal AI fleet can improve advertising outcomes but is principally a capital-consuming input rather than third-party infrastructure revenue."
+    },
+    {
+      "ticker": "ORCL",
+      "name": "Oracle",
+      "category": "Hyperscaler",
+      "stance": "capex-risk",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 5
+      },
+      "rationale": "OCI's expansion and contracted RPO conversion depend on funded, timely capacity deployment, making financing and build execution central constraints."
+    },
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA",
+      "category": "Compute & networking",
+      "stance": "capex-winner",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 5,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "NVIDIA sells the accelerated-compute platforms at the core of AI clusters, giving it direct operating exposure to sustained buildouts."
+    },
+    {
+      "ticker": "AVGO",
+      "name": "Broadcom",
+      "category": "Compute & networking",
+      "stance": "capex-winner",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 5,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Broadcom supplies custom AI ASICs and high-speed switching, both of which scale directly with hyperscale cluster construction."
+    },
+    {
+      "ticker": "AMD",
+      "name": "Advanced Micro Devices",
+      "category": "Compute & networking",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 3,
+      "reviewCount": 5,
+      "agreement": "majority",
+      "votes": {
+        "capex-winner": 2,
+        "capex-beneficiary": 3,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Accelerator and server-CPU deployments provide a second-source compute route when customers expand AI clusters, but adoption depends on platform qualification and ecosystem execution."
+    },
+    {
+      "ticker": "MU",
+      "name": "Micron Technology",
+      "category": "Compute & networking",
+      "stance": "capex-winner",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 5,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Micron's HBM and data-center memory content rise with accelerator deployments, despite the underlying memory-cycle volatility."
+    },
+    {
+      "ticker": "MRVL",
+      "name": "Marvell Technology",
+      "category": "Compute & networking",
+      "stance": "capex-winner",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 5,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Marvell's custom silicon and interconnect components are designed into the data-center fabrics built for AI clusters."
+    },
+    {
+      "ticker": "INTC",
+      "name": "Intel",
+      "category": "Compute & networking",
+      "stance": "balanced",
+      "conviction": "high",
+      "voteCount": 3,
+      "reviewCount": 5,
+      "agreement": "majority",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 0,
+        "balanced": 3,
+        "capex-risk": 2
+      },
+      "rationale": "Intel gains from server CPU and accelerator demand, but foundry investment requirements and execution risk offset the AI-capex benefit."
+    },
+    {
+      "ticker": "QCOM",
+      "name": "Qualcomm",
+      "category": "Compute & networking",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 3,
+      "reviewCount": 5,
+      "agreement": "majority",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 3,
+        "balanced": 2,
+        "capex-risk": 0
+      },
+      "rationale": "Qualcomm participates through edge-AI silicon and connectivity, which benefit indirectly from distributed AI deployment rather than core cluster spend."
+    },
+    {
+      "ticker": "ARM",
+      "name": "Arm Holdings",
+      "category": "Compute & networking",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Arm earns CPU IP exposure across data-center and edge systems, but its royalty model is less directly tied to individual infrastructure builds."
+    },
+    {
+      "ticker": "ANET",
+      "name": "Arista Networks",
+      "category": "Compute & networking",
+      "stance": "capex-winner",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 5,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Arista's high-speed Ethernet switching is a direct requirement for scaling AI-cluster networks."
+    },
+    {
+      "ticker": "CRDO",
+      "name": "Credo Technology",
+      "category": "Compute & networking",
+      "stance": "capex-winner",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 5,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Credo's high-speed connectivity products address the bandwidth and reach needs created by denser AI fabrics."
+    },
+    {
+      "ticker": "LITE",
+      "name": "Lumentum Holdings",
+      "category": "Compute & networking",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Lumentum supplies optical components for data-center interconnects, but its exposure is shared with other communications end markets."
+    },
+    {
+      "ticker": "COHR",
+      "name": "Coherent",
+      "category": "Compute & networking",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Coherent's optical transceiver and networking components benefit from AI interconnect buildouts alongside broader photonics demand."
+    },
+    {
+      "ticker": "MTSI",
+      "name": "MACOM Technology Solutions",
+      "category": "Compute & networking",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "MACOM's analog, RF, and optical components participate in data-center networking but represent a component-level rather than platform-level exposure."
+    },
+    {
+      "ticker": "SMCI",
+      "name": "Super Micro Computer",
+      "category": "Compute & networking",
+      "stance": "capex-winner",
+      "conviction": "high",
+      "voteCount": 2,
+      "reviewCount": 5,
+      "agreement": "split",
+      "votes": {
+        "capex-winner": 2,
+        "capex-beneficiary": 2,
+        "balanced": 0,
+        "capex-risk": 1
+      },
+      "rationale": "Super Micro integrates AI servers and liquid-cooling platforms, linking system shipments directly to customer cluster deployment."
+    },
+    {
+      "ticker": "DELL",
+      "name": "Dell Technologies",
+      "category": "Compute & networking",
+      "stance": "capex-beneficiary",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Dell supplies enterprise AI servers and storage, while its large client-device and services businesses dilute pure capex leverage."
+    },
+    {
+      "ticker": "HPE",
+      "name": "Hewlett Packard Enterprise",
+      "category": "Compute & networking",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 4,
+      "reviewCount": 5,
+      "agreement": "strong",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 4,
+        "balanced": 1,
+        "capex-risk": 0
+      },
+      "rationale": "HPE's AI systems and networking address enterprise infrastructure projects, but its diversified installed-base model limits direct hyperscale sensitivity."
+    },
+    {
+      "ticker": "WDC",
+      "name": "Western Digital",
+      "category": "Storage & data",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Western Digital's data-center storage demand can grow with AI data estates, though storage purchasing remains a separate capacity cycle."
+    },
+    {
+      "ticker": "STX",
+      "name": "Seagate Technology",
+      "category": "Storage & data",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Seagate's mass-capacity drives support retention of expanding AI data sets, but nearline-drive demand is not limited to AI clusters."
+    },
+    {
+      "ticker": "NTAP",
+      "name": "NetApp",
+      "category": "Storage & data",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "NetApp benefits indirectly as AI buildouts increase enterprise demand for high-performance all-flash storage and data pipelines, but its diversified storage portfolio and downstream position make the operating leverage to AI capex positive rather than direct and concentrated."
+    },
+    {
+      "ticker": "SNOW",
+      "name": "Snowflake",
+      "category": "Storage & data",
+      "stance": "balanced",
+      "conviction": "medium",
+      "voteCount": 4,
+      "reviewCount": 5,
+      "agreement": "strong",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 1,
+        "balanced": 4,
+        "capex-risk": 0
+      },
+      "rationale": "Snowflake can capture AI-related data-cloud consumption, but it is an application-layer cloud customer rather than a direct infrastructure equipment supplier."
+    },
+    {
+      "ticker": "CEG",
+      "name": "Constellation Energy",
+      "category": "Power & grid",
+      "stance": "capex-winner",
+      "conviction": "high",
+      "voteCount": 4,
+      "reviewCount": 5,
+      "agreement": "strong",
+      "votes": {
+        "capex-winner": 4,
+        "capex-beneficiary": 1,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Constellation's nuclear generation and hyperscaler power contracts directly address the firm-power requirement of new data-center load."
+    },
+    {
+      "ticker": "VST",
+      "name": "Vistra",
+      "category": "Power & grid",
+      "stance": "capex-winner",
+      "conviction": "medium",
+      "voteCount": 3,
+      "reviewCount": 5,
+      "agreement": "majority",
+      "votes": {
+        "capex-winner": 3,
+        "capex-beneficiary": 2,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Vistra's generation fleet can benefit from incremental data-center electricity demand where new AI load tightens local power markets."
+    },
+    {
+      "ticker": "NRG",
+      "name": "NRG Energy",
+      "category": "Power & grid",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 3,
+      "reviewCount": 5,
+      "agreement": "majority",
+      "votes": {
+        "capex-winner": 1,
+        "capex-beneficiary": 3,
+        "balanced": 1,
+        "capex-risk": 0
+      },
+      "rationale": "NRG's competitive generation can serve expanding load, but its retail-energy model leaves it less concentrated on AI infrastructure demand."
+    },
+    {
+      "ticker": "NEE",
+      "name": "NextEra Energy",
+      "category": "Power & grid",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "NextEra's renewable, storage, and transmission investments can support data-center power needs within a much broader utility and development portfolio."
+    },
+    {
+      "ticker": "PWR",
+      "name": "Quanta Services",
+      "category": "Power & grid",
+      "stance": "capex-winner",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 5,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Quanta installs the transmission, substations, and interconnections required to make power available to new AI data centers."
+    },
+    {
+      "ticker": "ETN",
+      "name": "Eaton",
+      "category": "Power & grid",
+      "stance": "capex-winner",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 5,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Eaton's electrical distribution and power-management equipment is embedded in the power train of data-center expansion."
+    },
+    {
+      "ticker": "GEV",
+      "name": "GE Vernova",
+      "category": "Power & grid",
+      "stance": "capex-winner",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 5,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "GE Vernova supplies gas turbines, grid equipment, and services that address incremental generation and grid needs from AI load growth."
+    },
+    {
+      "ticker": "HUBB",
+      "name": "Hubbell",
+      "category": "Power & grid",
+      "stance": "capex-beneficiary",
+      "conviction": "high",
+      "voteCount": 4,
+      "reviewCount": 5,
+      "agreement": "strong",
+      "votes": {
+        "capex-winner": 1,
+        "capex-beneficiary": 4,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Hubbell's transmission and distribution equipment benefits from grid reinforcement, although utility spending extends well beyond AI demand."
+    },
+    {
+      "ticker": "JCI",
+      "name": "Johnson Controls",
+      "category": "Power & grid",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Johnson Controls supplies building controls and cooling systems used in data centers, within a wider commercial-building portfolio."
+    },
+    {
+      "ticker": "TT",
+      "name": "Trane Technologies",
+      "category": "Power & grid",
+      "stance": "capex-winner",
+      "conviction": "high",
+      "voteCount": 4,
+      "reviewCount": 5,
+      "agreement": "strong",
+      "votes": {
+        "capex-winner": 4,
+        "capex-beneficiary": 1,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Trane's precision cooling and HVAC systems are directly needed as AI racks increase thermal density in data centers."
+    },
+    {
+      "ticker": "CARR",
+      "name": "Carrier Global",
+      "category": "Power & grid",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 4,
+      "reviewCount": 5,
+      "agreement": "strong",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 4,
+        "balanced": 1,
+        "capex-risk": 0
+      },
+      "rationale": "Carrier's thermal-management offerings can benefit from data-center cooling demand, but its exposure is diversified across building markets."
+    },
+    {
+      "ticker": "WMB",
+      "name": "Williams Companies",
+      "category": "Power & grid",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Williams transports natural gas that can fuel incremental generation for data-center load, subject to power-plant build and regional demand conversion."
+    },
+    {
+      "ticker": "KMI",
+      "name": "Kinder Morgan",
+      "category": "Power & grid",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Kinder Morgan's gas-transport network may serve power growth associated with AI load, but its contracted infrastructure has broad non-AI end uses."
+    },
+    {
+      "ticker": "VRT",
+      "name": "Vertiv Holdings",
+      "category": "Data-center infrastructure",
+      "stance": "capex-winner",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 5,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Vertiv sells data-center power systems and liquid cooling, making its equipment content directly responsive to higher-density AI builds."
+    },
+    {
+      "ticker": "EQIX",
+      "name": "Equinix",
+      "category": "Data-center infrastructure",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 4,
+      "reviewCount": 5,
+      "agreement": "strong",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 4,
+        "balanced": 0,
+        "capex-risk": 1
+      },
+      "rationale": "Equinix benefits from colocation and interconnection demand, but its growth requires capital-intensive delivery of powered capacity."
+    },
+    {
+      "ticker": "DLR",
+      "name": "Digital Realty Trust",
+      "category": "Data-center infrastructure",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 3,
+      "reviewCount": 5,
+      "agreement": "majority",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 3,
+        "balanced": 0,
+        "capex-risk": 2
+      },
+      "rationale": "Digital Realty provides the powered shells for data-center tenants, with returns dependent on financing, construction, and leasing conversion."
+    },
+    {
+      "ticker": "CRWV",
+      "name": "CoreWeave",
+      "category": "Neocloud",
+      "stance": "capex-risk",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 5
+      },
+      "rationale": "CoreWeave's GPU-cloud buildout is structurally exposed to customer concentration, capacity funding, and refinancing if AI infrastructure demand slows."
+    },
+    {
+      "ticker": "NBIS",
+      "name": "Nebius Group",
+      "category": "Neocloud",
+      "stance": "capex-risk",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 5
+      },
+      "rationale": "Nebius must fund and execute an AI-cloud capacity buildout, making its exposure highly sensitive to capital availability and utilization."
+    },
+    {
+      "ticker": "IREN",
+      "name": "IREN",
+      "category": "Neocloud",
+      "stance": "capex-risk",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 5
+      },
+      "rationale": "IREN's AI-cloud opportunity depends on converting power-site capacity into utilized compute infrastructure amid substantial deployment demands."
+    },
+    {
+      "ticker": "CORZ",
+      "name": "Core Scientific",
+      "category": "Neocloud",
+      "stance": "capex-risk",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 5
+      },
+      "rationale": "Core Scientific's AI and HPC hosting thesis relies on power-infrastructure conversion, customer commitments, and execution of the hosting transition."
+    },
+    {
+      "ticker": "CIFR",
+      "name": "Cipher Mining",
+      "category": "Neocloud",
+      "stance": "capex-risk",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 5
+      },
+      "rationale": "Cipher Mining's AI and HPC optionality depends on financing and developing power sites into credible data-center capacity."
+    },
+    {
+      "ticker": "WULF",
+      "name": "TeraWulf",
+      "category": "Neocloud",
+      "stance": "capex-risk",
+      "conviction": "high",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 0,
+        "balanced": 0,
+        "capex-risk": 5
+      },
+      "rationale": "TeraWulf's AI-hosting upside requires capital-intensive use of power-heavy infrastructure and is vulnerable to funding or utilization shortfalls."
+    },
+    {
+      "ticker": "PLTR",
+      "name": "Palantir Technologies",
+      "category": "AI software",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 3,
+      "reviewCount": 5,
+      "agreement": "majority",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 3,
+        "balanced": 2,
+        "capex-risk": 0
+      },
+      "rationale": "Palantir can monetize software where customers have AI capacity available, but it neither owns the infrastructure nor depends directly on construction spend."
+    },
+    {
+      "ticker": "DDOG",
+      "name": "Datadog",
+      "category": "AI software",
+      "stance": "capex-beneficiary",
+      "conviction": "medium",
+      "voteCount": 5,
+      "reviewCount": 5,
+      "agreement": "unanimous",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 5,
+        "balanced": 0,
+        "capex-risk": 0
+      },
+      "rationale": "Datadog's observability usage can increase with complex AI workloads, although its benefit follows cloud consumption rather than hardware procurement."
+    },
+    {
+      "ticker": "NOW",
+      "name": "ServiceNow",
+      "category": "AI software",
+      "stance": "balanced",
+      "conviction": "medium",
+      "voteCount": 4,
+      "reviewCount": 5,
+      "agreement": "strong",
+      "votes": {
+        "capex-winner": 0,
+        "capex-beneficiary": 1,
+        "balanced": 4,
+        "capex-risk": 0
+      },
+      "rationale": "ServiceNow's workflow-AI monetization depends on enterprise software adoption rather than on the pace of data-center construction."
+    }
+  ]
+}

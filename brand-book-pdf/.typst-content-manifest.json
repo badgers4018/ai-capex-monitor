@@ -1,0 +1,11 @@
+{
+  "task_kind": "markdown-to-pdf",
+  "output": "pdf",
+  "signals": [],
+  "hard_constraints": ["professional standalone brand book", "portrait document", "semantic color palette", "tables", "no council commentary"],
+  "content_features": {
+    "code_blocks": 0,
+    "defined_terms": 18,
+    "portrait_images": 1
+  }
+}
