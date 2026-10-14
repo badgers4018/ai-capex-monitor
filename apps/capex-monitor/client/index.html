@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="Capital Misallocation — AI Capex Monitor. Evidence-led research on the investment, financing, power, and return dynamics of AI infrastructure." />
+    <meta property="og:title" content="Capital Misallocation — AI Capex Monitor" />
+    <meta property="og:description" content="A trillion-dollar buildout is now searching for its economic clearing price." />
+    <meta property="og:type" content="website" />
+    <title>Capital Misallocation — AI Capex Monitor</title>
+    <link rel="icon" type="image/png" href="/manus-storage/capital-misallocation-mark-32_459138ca.png" />
+    <link rel="apple-touch-icon" href="/manus-storage/capital-misallocation-mark-180_187fe590.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem("capital-misallocation.theme");
+          var motion = localStorage.getItem("capital-misallocation.motion");
+          var resolvedTheme = theme === "dark" ? "dark" : "paper";
+          var resolvedMotion = motion === "quiet" || motion === "dynamic" ? motion : "standard";
+          document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
+          document.documentElement.dataset.theme = resolvedTheme;
+          document.documentElement.dataset.motion = resolvedMotion;
+        } catch (_) {
+          document.documentElement.dataset.theme = "paper";
+          document.documentElement.dataset.motion = "standard";
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script defer src="%VITE_ANALYTICS_ENDPOINT%/umami" data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
+  </body>
+</html>
